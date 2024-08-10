@@ -16,17 +16,12 @@ function baseCall(method) {
     if (method !== "GET") {
       options.body = JSON.stringify(body);
     }
-    console.log({ apiUrl: "" });
     const response = await fetch(
       import.meta.env.MODE === "development"
-        ? new URL(url, "http://localhost:3000")
+        ? new URL(url, "http://localhost:3001")
         : url,
       options
     );
-
-    if (response.status === 401) {
-      window.location.href = "/login";
-    }
 
     const data = await response.json();
 

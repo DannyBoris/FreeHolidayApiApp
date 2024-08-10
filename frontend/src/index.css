@@ -10,6 +10,9 @@
   .btn-lg {
     @apply py-3 px-6 text-lg;
   }
+  .btn-outline {
+    @apply border border-purple-500 text-purple-500 hover:bg-purple-500 hover:text-white transition duration-200 ease-in-out;
+  }
 }
 
 * > * {

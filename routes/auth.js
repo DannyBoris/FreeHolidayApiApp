@@ -1,21 +1,12 @@
 const router = require("express").Router();
 const crypto = require("crypto");
 const jwt = require("jsonwebtoken");
-const path = require("path");
-const fs = require("fs");
-const { authentication } = require("../middlewares/auth");
-const {
-  uuid,
-  isExpired,
-  expireAfter,
-  setAuthCookie,
-  signJWTToken,
-} = require("../utils");
-const { getUser } = require("../controllers/users");
-const usersDir = "./database/users";
-const users = fs.readdirSync(usersDir);
 
-router.post("/login", (req, res) => {
+const { authentication } = require("../middlewares/auth");
+const { isExpired, setAuthCookie, signJWTToken } = require("../utils");
+const { getUser, saveUser, getUserByEmail } = require("../controllers/users");
+
+router.post("/login", async (req, res) => {
   if (!req.body.email || !req.body.password) {
     const cookies = req.cookies;
     if (cookies.authToken) {
@@ -33,66 +24,28 @@ router.post("/login", (req, res) => {
     }
   }
   const { email, password } = req.body;
-  const currUserFile = users.find((user) => {
-    const userObj = JSON.parse(
-      fs.readFileSync(path.join(usersDir, user), "utf-8")
-    );
-    if (userObj.email === email) {
-      return true;
-    }
-  });
-  if (!currUserFile) {
-    return res.status(409).send({ message: "User not found" });
-  }
-  const currUser = JSON.parse(
-    fs.readFileSync(path.join(usersDir, currUserFile), "utf-8")
-  );
-
+  const user = await getUserByEmail(email);
   const hash = crypto.createHash("sha256").update(password).digest("hex");
-  const user = getUser(currUser.id);
+  console.log(hash, user);
   if (!user) {
     return res.status(404).send({ message: "User not found" });
   }
+
   if (user.hash !== hash) {
     return res.status(401).send({ message: "Unauthorized" });
   }
+
   if (!req.cookies.authToken) {
     setAuthCookie(res, signJWTToken({ id: user.id, email, hash }));
   }
   res.send({ userId: user.id });
 });
+
 router.post("/register", async (req, res) => {
   const { email, password } = req.body;
   const hash = crypto.createHash("sha256").update(password).digest("hex");
-  const userId = uuid();
-
-  fs.writeFileSync(
-    path.join(usersDir, `${userId}.json`),
-    JSON.stringify({
-      id: userId,
-      email,
-      hash,
-      apiKey: null,
-      requestsLeft: 1000,
-    })
-  );
-  const jwtToken = await new Promise((resolve, reject) => {
-    jwt.sign({ id: userId, email, hash }, "secret", (err, token) => {
-      if (err) {
-        reject(err);
-        return;
-      }
-      resolve(token);
-    });
-  });
-  //send cookie
-  res.cookie("authToken", jwtToken, {
-    httpOnly: false,
-    secure: process.env.NODE_ENV === "production",
-    maxAge: expireAfter,
-    expires: new Date(Date.now() + expireAfter),
-  });
-
+  const userId = await saveUser({ email, hash });
+  setAuthCookie(res, signJWTToken({ id: userId, email, hash }));
   res.send({ userId });
 });
 
@@ -101,11 +54,10 @@ router.post("/logout", (req, res) => {
   res.send({ message: "Logged out" });
 });
 
-router.get("/me", authentication, (req, res) => {
+router.get("/me", authentication, async (req, res) => {
   try {
-    const user = JSON.parse(
-      fs.readFileSync(path.join(usersDir, `${req.user}.json`), "utf-8")
-    );
+    const user = await getUser(req.user);
+    console.log({ user });
     res.send({
       email: user.email,
       requestsLeft: user.requestsLeft,

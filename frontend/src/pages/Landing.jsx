@@ -1,9 +1,19 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { api } from "../api";
 import { toast } from "react-toastify";
 
 function Landing() {
+  useEffect(() => {
+    const faq = document.querySelectorAll(".faq");
+    Array.from(faq).forEach((item) => {
+      const toggleBtn = item.querySelector(".faq-btn");
+      toggleBtn.addEventListener("click", () => {
+        item.classList.toggle("active");
+      });
+    });
+  }, []);
+
   async function handleSupportSubmit(e) {
     e.preventDefault();
     const formData = new FormData(e.target);
@@ -21,76 +31,26 @@ function Landing() {
       console.error(error);
     }
   }
-  const [plan, setPlan] = useState("free");
+  const [plan, setPlan] = useState("monthly");
 
   return (
     <main>
-      <div className="absolute w-[30px] top-1/2 left-1/2">
-        <svg
-          width="100px"
-          height="100px"
-          viewBox="0 0 64 64"
-          id="duotone"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M15.266,11.069c-.089.116-.182.231-.272.347L7.2,9.482c-.025-.144-.053-.29-.078-.434a1,1,0,0,0-1.971.339c.687,3.991,1.462,8.028,2.3,12a1,1,0,0,0,1.746.433c2.6-3.117,5.174-6.323,7.645-9.528a1,1,0,0,0-1.584-1.221Z"
-            style={{ fill: "#ffbd4a" }}
-          />
-          <path
-            d="M44.26,15.394a1,1,0,0,0-1.372.344c-.075.125-.154.25-.23.376L34.705,15.1c-.042-.14-.087-.281-.128-.421a1,1,0,0,0-1.918.566c1.141,3.873,2.38,7.791,3.68,11.647a1,1,0,0,0,.822.672,1.066,1.066,0,0,0,.126.008,1,1,0,0,0,.837-.453c2.217-3.4,4.4-6.88,6.48-10.355A1,1,0,0,0,44.26,15.394Z"
-            style={{ fill: "#ffbd4a" }}
-          />
-          <path
-            d="M29.009,13.808c-.082.12-.168.24-.251.361L20.878,12.7c-.034-.142-.071-.286-.1-.428a1,1,0,0,0-1.948.453c.917,3.944,1.925,7.928,3,11.842a1,1,0,0,0,.78.719,1.05,1.05,0,0,0,.184.017,1,1,0,0,0,.8-.4c2.415-3.267,4.8-6.617,7.072-9.959a1,1,0,1,0-1.653-1.126Z"
-            style={{ fill: "#ffbd4a" }}
-          />
-          <path
-            d="M58.215,16.433a1,1,0,0,0-1.35.422c-.067.13-.139.26-.207.389L48.65,16.7c-.049-.137-.1-.275-.152-.412a1,1,0,0,0-1.882.676c1.369,3.8,2.835,7.643,4.358,11.413a1,1,0,0,0,.859.623l.068,0a1,1,0,0,0,.868-.5c2.021-3.528,4-7.133,5.869-10.715A1,1,0,0,0,58.215,16.433Z"
-            style={{ fill: "#ffbd4a" }}
-          />
-          <path
-            d="M60.773,18.441h-.035A241.675,241.675,0,0,1,2.954,9.371,1,1,0,0,1,3.5,7.447a239.64,239.64,0,0,0,57.306,9,1,1,0,0,1-.034,2Z"
-            style={{ fill: "#363636" }}
-          />
-          <path
-            d="M58.029,35.824a.992.992,0,0,0-1.155.815c-.025.144-.053.29-.078.434l-7.79,1.934c-.09-.116-.183-.231-.272-.346a1,1,0,1,0-1.584,1.22c2.466,3.2,5.038,6.405,7.645,9.529a1,1,0,0,0,.768.359,1.045,1.045,0,0,0,.241-.029,1,1,0,0,0,.737-.763c.841-3.969,1.616-8.006,2.3-12A1,1,0,0,0,58.029,35.824Z"
-            style={{ fill: "#ffbd4a" }}
-          />
-          <path
-            d="M30.665,41.6a1,1,0,0,0-1.242.676c-.041.14-.086.281-.127.421l-7.954,1.012c-.076-.126-.155-.251-.23-.376A1,1,0,1,0,19.4,44.357c2.083,3.476,4.263,6.959,6.48,10.355a1,1,0,0,0,.837.453.888.888,0,0,0,.126-.008,1,1,0,0,0,.822-.672c1.3-3.852,2.538-7.771,3.68-11.647A1,1,0,0,0,30.665,41.6Z"
-            style={{ fill: "#ffbd4a" }}
-          />
-          <path
-            d="M44.426,39.11a1,1,0,0,0-1.2.748c-.033.142-.07.286-.1.428l-7.88,1.474c-.083-.121-.169-.241-.251-.362a1,1,0,0,0-1.653,1.126c2.276,3.341,4.655,6.691,7.072,9.96a1,1,0,0,0,.8.405.945.945,0,0,0,.183-.017,1,1,0,0,0,.781-.719c1.072-3.918,2.08-7.9,3-11.842A1,1,0,0,0,44.426,39.11Z"
-            style={{ fill: "#ffbd4a" }}
-          />
-          <path
-            d="M16.781,43.274a1,1,0,0,0-1.279.6c-.049.137-.1.275-.152.413l-8.008.545c-.068-.129-.139-.259-.207-.388a1,1,0,1,0-1.773.927c1.876,3.586,3.851,7.191,5.869,10.714a1,1,0,0,0,.868.5l.068,0a1,1,0,0,0,.859-.623c1.523-3.769,2.989-7.609,4.358-11.412A1,1,0,0,0,16.781,43.274Z"
-            style={{ fill: "#ffbd4a" }}
-          />
-          <path
-            d="M3.227,46.032a1,1,0,0,1-.034-2,239.547,239.547,0,0,0,57.306-9,1,1,0,0,1,.547,1.924,241.582,241.582,0,0,1-57.784,9.07Z"
-            style={{ fill: "#363636" }}
-          />
-        </svg>
-      </div>
       <section id="home" className="pt-[165px]">
         <div className="container lg:max-w-[1305px] lg:px-10">
           <div className="-mx-4 flex flex-wrap items-center">
             <div className="w-full px-4 lg:w-7/12">
               <div
-                className="wow fadeInUp mb-12 lg:mb-0 lg:max-w-[570px]"
+                className="wow fadeInUp mb-12 lg:mb-0 lg:max-w-[570px] "
                 data-wow-delay=".2s"
                 style={{ visibility: "visible", animationDelay: "0.2s" }}
               >
-                <h1 className="mb-6 text-3xl font-bold leading-tight text-black dark:text-white sm:text-[40px] md:text-[50px] lg:text-[42px] xl:text-[50px]">
-                  <span className="inline bg-gradient-1 bg-clip-text text-transparent">
+                <h1 className="mb-6 text-4xl font-bold leading-tight text-black dark:text-white sm:text-[40px] md:text-[50px] lg:text-[42px] xl:text-[50px]">
+                  <span className="inline bg-gradient-1 bg-clip-text text-transparent ">
                     Free Holiday API
                   </span>
                 </h1>
                 <p className="mb-10 max-w-[475px] text-base leading-relaxed text-body"></p>
-                <p className="mb-10 max-w-[475px] text-base leading-relaxed text-body">
+                <p className="mb-10 max-w-[475px] text-lg leading-relaxed text-body">
                   Discover the worlds holidays with our free Holiday API. From
                   traditional celebrations to observances, our API provides the
                   holiday data you need.
@@ -103,36 +63,6 @@ function Landing() {
                 data-wow-delay=".3s"
               >
                 <div className="max-auto absolute top-0 left-0 right-0 -z-10 aspect-square w-full rounded-full bg-gradient-1">
-                  <div className="absolute top-5 right-0">
-                    <svg
-                      width="72"
-                      height="51"
-                      viewBox="0 0 72 51"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <g clipPath="url(#clip0_5_3665)">
-                        <path
-                          d="M22.378 0.4157C22.3814 0.342879 22.3851 0.270712 22.3891 0.199219C22.3857 0.271606 22.382 0.343766 22.378 0.4157C22.0401 7.83785 25.7079 22.0514 43.163 21.2025C36.0333 21.7022 21.9045 26.7677 22.3875 43.0291C22.1659 35.9367 17.5749 21.9221 1.00683 21.8442C0.856728 21.8465 0.709534 21.8469 0.56543 21.8454C0.713499 21.8439 0.86063 21.8435 1.00683 21.8442C8.04005 21.7355 21.4537 17.3609 22.378 0.4157Z"
-                          fill="#7083F5"
-                        ></path>
-                        <path
-                          d="M59.3487 24.4888C59.3506 24.4451 59.3528 24.4018 59.3552 24.3589C59.3532 24.4023 59.351 24.4456 59.3487 24.4888C59.1459 28.942 61.3466 37.4702 71.8196 36.9608C67.5418 37.2606 59.0645 40.3 59.3543 50.0568C59.2213 45.8014 56.4667 37.3926 46.5259 37.3459C46.4359 37.3473 46.3475 37.3475 46.261 37.3466C46.3499 37.3457 46.4382 37.3454 46.5259 37.3459C50.7458 37.2807 58.794 34.6559 59.3487 24.4888Z"
-                          fill="#19DEBB"
-                        ></path>
-                      </g>
-                      <defs>
-                        <clipPath id="clip0_5_3665">
-                          <rect
-                            width="71.2541"
-                            height="49.8779"
-                            fill="white"
-                            transform="translate(0.56543 0.199219)"
-                          ></rect>
-                        </clipPath>
-                      </defs>
-                    </svg>
-                  </div>
                   <div className="absolute bottom-10 left-0">
                     <svg
                       width="65"
@@ -172,9 +102,6 @@ function Landing() {
             </div>
           </div>
         </div>
-      </section>
-
-      <section id="features" className="relative z-10 pt-[110px]">
         <div className="container">
           <div
             className="wow fadeInUp mx-auto mb-14 max-w-[690px] text-center lg:mb-[70px]"
@@ -189,6 +116,9 @@ function Landing() {
             </p>
           </div>
         </div>
+      </section>
+
+      <section id="features" className="relative z-10 pt-[110px]">
         <div className="container max-w-[1390px]">
           <div className="rounded-2xl bg-white px-5 pt-14 pb-14 shadow-card dark:bg-dark dark:shadow-card-dark md:pb-1 lg:pt-20 lg:pb-5 xl:px-10">
             <div className="-mx-4 flex flex-wrap justify-center">
@@ -529,7 +459,7 @@ function Landing() {
                   <h3 className="mb-4 text-xl font-semibold text-black dark:text-white sm:text-[22px] xl:text-[26px]">
                     Sign in
                   </h3>
-                  <p className="text-base text-body">Its easy!</p>
+                  <p className="text-base text-body">We support Github auth</p>
                 </div>
               </div>
               <div className="w-full px-4 md:w-1/2 lg:w-1/3">
@@ -722,11 +652,6 @@ function Landing() {
             <h2 className="mb-4 text-3xl font-bold text-black dark:text-white sm:text-4xl md:text-[44px] md:leading-tight">
               Choose Your Plan
             </h2>
-            <p className="text-base text-body">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. In
-              convallis tortor eros. Donec vitae tortor lacus. Phasellus aliquam
-              ante in maximus.
-            </p>
           </div>
         </div>
         <div className="container max-w-[1120px] overflow-hidden">
@@ -868,9 +793,14 @@ function Landing() {
                     </span>
                   </p>
                 </div>
-                <a href="dashboard" className="btn-lg btn-primary w-full">
-                  Choose Plan
-                </a>
+                <div className="flex justify-center w-full">
+                  <a
+                    href="/dashboard"
+                    className="btn-lg btn-outline w-full text-center"
+                  >
+                    Choose Plan
+                  </a>
+                </div>
               </div>
             </div>
             <div className="w-full px-6 md:w-1/2 lg:w-1/3">
@@ -889,10 +819,12 @@ function Landing() {
                   <span className="text-[40px] font-bold leading-none">
                     <sup className="text-[22px] font-medium"> $ </sup>
                     <span id="unlimited-price">
-                      {plan === "monthly" ? "9.99" : "89.99"}
+                      {plan === "monthly" ? "9.99" : "89"}
                     </span>
                   </span>
-                  <span className="text-base text-body"> /month </span>
+                  <span className="text-base text-body">
+                    {plan === "monthly" ? "/ month" : "/ year"}{" "}
+                  </span>
                 </p>
                 <div className="space-y-4 pt-[30px] pb-10">
                   <p className="flex text-base text-black dark:text-body">
@@ -992,12 +924,17 @@ function Landing() {
                     Custom Branding Strategy
                   </p>
                 </div>
-                <a
-                  href="#"
-                  className="block w-full rounded-md bg-primary py-[10px] px-8 text-center text-base font-medium text-white hover:bg-opacity-90"
-                >
-                  Choose Plan
-                </a>
+                <div className="flex justify-center w-full">
+                  <button
+                    onClick={() => {
+                      toast.info("Coming soon");
+                    }}
+                    href="#"
+                    className="btn-lg btn-primary w-full text-center"
+                  >
+                    Choose Plan
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -1021,12 +958,12 @@ function Landing() {
             className="faqs  wow fadeInUp mx-auto w-full max-w-[785px] rounded-lg bg-white px-6 py-[6px] shadow-card dark:bg-black dark:shadow-card-dark"
             data-wow-delay=".3s"
           >
-            <div className="faq border-b border-stroke last-of-type:border-none dark:border-stroke-dark">
+            <div className="faq  border-b border-stroke last-of-type:border-none dark:border-stroke-dark">
               <button className="faq-btn relative flex w-full justify-between py-6 px-[18px] text-left text-base font-medium text-black dark:text-white sm:px-[26px] sm:text-lg">
                 Can I cancel my subscription?
               </button>
-              <div className="faq-content h-auto overflow-hidden border-t border-stroke px-[18px] dark:border-stroke-dark sm:px-[26px]">
-                <p className="text-base text-body">
+              <div className="faq-content  h-auto  border-t border-stroke px-[18px] dark:border-stroke-dark sm:px-[26px] spacing ">
+                <p className="text-base text-body leading-relaxed">
                   Cancelling you subscription is possible at any time. All you
                   have to do is click the cancel button in your account
                   settings. If you cancel your subscription, you will still have
@@ -1034,29 +971,28 @@ function Landing() {
                 </p>
               </div>
             </div>
-            <div className="faq border-b border-stroke last-of-type:border-none dark:border-stroke-dark">
+            <div className="faq  border-b border-stroke last-of-type:border-none dark:border-stroke-dark">
               <button className="faq-btn relative flex w-full justify-between py-6 px-[18px] text-left text-base font-medium text-black dark:text-white sm:px-[26px] sm:text-lg">
-                Lorem ipsum dolor sit amet, consectetur.
+                Is FreeHolidayApi really free?
               </button>
               <div className="faq-content h-auto overflow-hidden border-t border-stroke px-[18px] dark:border-stroke-dark sm:px-[26px]">
                 <p className="text-base text-body">
-                  We provide digital experience services to startups and small
-                  businesses. We help our clients succeed by creating brand
-                  identities, digital experiences. Praesent vel nibh a tellus
-                  dictum gravida sed tempor nunc.
+                  Yes, FreeHolidayApi is free to use. We offer a free plan with
+                  montly requests. If you need more requests, you can upgrade to
+                  a paid plan.
                 </p>
               </div>
             </div>
-            <div className="faq border-b border-stroke last-of-type:border-none dark:border-stroke-dark">
+            <div className="faq border-b border-stroke last-of-type:border-none dark:border-stroke-dark ">
               <button className="faq-btn relative flex w-full justify-between py-6 px-[18px] text-left text-base font-medium text-black dark:text-white sm:px-[26px] sm:text-lg">
-                Lorem ipsum dolor sit amet, consectetur.
+                Who is FreeHolidayApi for?
               </button>
               <div className="faq-content h-auto overflow-hidden border-t border-stroke px-[18px] dark:border-stroke-dark sm:px-[26px]">
                 <p className="text-base text-body">
-                  We provide digital experience services to startups and small
-                  businesses. We help our clients succeed by creating brand
-                  identities, digital experiences. Praesent vel nibh a tellus
-                  dictum gravida sed tempor nunc.
+                  FreeHolidayApi is for developers who need a simple and easy to
+                  use API to get holidays from around the world. It is also for
+                  developers who want to get holidays from a specific country or
+                  year.
                 </p>
               </div>
             </div>

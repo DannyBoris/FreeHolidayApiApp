@@ -20,18 +20,21 @@ function Header() {
   }, [location.hash]);
 
   const links = [
-    { name: "API docs", href: "#about" },
+    { name: "API docs", href: "/docs" },
     { name: "Countries", href: "countries" },
     { name: "Pricing", href: "/#pricing" },
     { name: "Support", href: "/#support" },
-    { name: "Blog", href: "/#blog" },
   ];
 
   return (
     <header className="h-[80px] border-b border-b-gray-200 items-center py-2 justify-between flex bg-white">
       <div className="container mx-auto">
         <div className="flex items-center h-full justify-between w-full">
-          <div className="h-full bg-blue-500 p-5">LOGO</div>
+          <Link to="/">
+            <div className="h-full p-5 text-2xl bg-gradient-1 bg-clip-text text-transparent underline">
+              FreeHolidayAPI
+            </div>
+          </Link>
           <nav>
             <ul className="flex items-center gap-10">
               {links.map((link) => (
@@ -47,11 +50,15 @@ function Header() {
             </ul>
           </nav>
           {user ? (
-            <button className="btn-primary btn-lg">Dashboard</button>
+            <Link to="/dashboard" className="btn-primary btn-lg">
+              Dashboard
+            </Link>
           ) : (
             <div className="flex items-center gap-6">
-              <button>Login</button>
-              <button className="btn-primary">Sign up</button>
+              <a href="/login">Login</a>
+              <a href="/login?signup=true" className="btn-primary">
+                Sign up
+              </a>
             </div>
           )}
         </div>

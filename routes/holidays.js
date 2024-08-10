@@ -1,10 +1,10 @@
 const router = require("express").Router();
 const path = require("path");
 const holidaysDir = "./database/holidays";
-const usersDir = "./database/users";
 const fs = require("fs");
+const { getUser, updateUser } = require("../controllers/users");
 
-router.get("/", (req, res) => {
+router.get("/", async (req, res) => {
   const { country, year } = req.query;
   console.log({ user: req.user });
   if (!country || !year) {
@@ -18,7 +18,6 @@ router.get("/", (req, res) => {
   }
 
   const countryDir = path.join(holidaysDir, currCountry);
-  const currUserFile = path.join(usersDir, `${req.user}.json`);
 
   if (!fs.existsSync(countryDir)) {
     return res.status(404).send("Data not found");
@@ -28,11 +27,10 @@ router.get("/", (req, res) => {
   if (!fs.existsSync(dataPath)) {
     return res.status(404).send("Data not found");
   }
-
-  const user = JSON.parse(fs.readFileSync(currUserFile, "utf-8"));
+  console.log(req.user);
+  const user = await getUser(req.user);
   user.requestsLeft -= 1;
-  fs.writeFileSync(currUserFile, JSON.stringify(user));
-
+  await updateUser(req.user, { requestsLeft: user.requestsLeft });
   const data = fs.readFileSync(dataPath, "utf-8");
   res.json(JSON.parse(data));
 });

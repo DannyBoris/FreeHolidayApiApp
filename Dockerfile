@@ -1,7 +1,8 @@
 FROM node:20.4-alpine
 
 WORKDIR /app
-
+ARG PORT=3000
+ENV PORT=$PORT
 # build backend
 COPY package*.json .
 RUN npm install
@@ -15,6 +16,6 @@ COPY . .
 # build frontend
 RUN npm run build --prefix frontend
 
-EXPOSE 3000
+EXPOSE $PORT
 
 CMD ["npm", "start"]

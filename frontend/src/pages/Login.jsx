@@ -105,7 +105,7 @@ function Login() {
         {isLogin ? "Login" : "Signup"}
       </button>
       <flex className="flex w-full items-center justify-end cursor-poiner">
-        <span className="underline self-end">Forgot password?</span>
+        {/* <span className="underline self-end">Forgot password?</span> */}
       </flex>
       {/* or */}
       <div className="flex items-center justify-center w-full">
@@ -115,7 +115,7 @@ function Login() {
       </div>
       <div className="flex items-center justify-between w-full flex-wrap">
         <a
-          href={`https://github.com/login/oauth/authorize?client_id=${"Iv23ct0odBTkSq3IO2yN"}&redirect_uri=http://localhost:3000/api/v1/github/callback`}
+          href={`https://github.com/login/oauth/authorize?client_id=${"Iv23ct0odBTkSq3IO2yN"}&redirect_uri=http://localhost:3001/api/v1/github/callback`}
         >
           <button className="flex items-center border border-gray-200 p-3 rounded-lg mx-auto px-10 disabled:opacity-40">
             <img width={30} src={GithubIcon} alt="" />

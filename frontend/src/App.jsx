@@ -8,6 +8,7 @@ import Countries from "./pages/Countries";
 import NotFound404 from "./pages/NotFound404";
 import { createContext, useEffect, useState } from "react";
 import { api } from "./api";
+import ApiDocs from "./pages/ApiDocs";
 
 export const UserContext = createContext();
 
@@ -37,6 +38,7 @@ function App() {
             <Route path="/login" Component={Login} />
             <Route path="/dashboard" Component={Dashboard} />
             <Route path="/countries" Component={Countries} />
+            <Route path="/docs" Component={ApiDocs} />
             <Route path="*" element={<NotFound404 />} />
           </Routes>
         </Layout>

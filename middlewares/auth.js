@@ -1,6 +1,4 @@
 const jwt = require("jsonwebtoken");
-const usersDir = "./database/users";
-const fs = require("fs");
 const { getUserByApiKey } = require("../controllers/users");
 
 exports.authentication = (req, res, next) => {
@@ -20,14 +18,14 @@ exports.authentication = (req, res, next) => {
   }
 };
 
-exports.authorization = (req, res, next) => {
+exports.authorization = async (req, res, next) => {
   const { apiKey } = req.query;
   if (!apiKey) {
     return res
       .status(401)
       .send({ message: "Unauthorized. Please provide an API key" });
   }
-  const user = getUserByApiKey(apiKey);
+  const user = await getUserByApiKey(apiKey);
 
   if (!user) {
     return res.status(401).send({ message: "Unauthorized. Invalid API key" });

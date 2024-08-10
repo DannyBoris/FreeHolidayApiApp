@@ -21,7 +21,10 @@ function Footer() {
                 <a href="/terms" className="text-base text-white">
                   Terms and conditions
                 </a>
-                <a href="https://www.termsfeed.com/live/91ce10aa-e6c2-47e7-ae84-1a02698e5d43">
+                <a
+                  className="text-base text-white"
+                  href="https://www.termsfeed.com/live/91ce10aa-e6c2-47e7-ae84-1a02698e5d43"
+                >
                   Refund policy
                 </a>
               </div>

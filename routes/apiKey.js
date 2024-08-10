@@ -1,10 +1,6 @@
 const router = require("express").Router();
-const fs = require("fs");
 const { uuid } = require("../utils");
 const { updateUser, getUser } = require("../controllers/users");
-
-const usersDir = "./database/users";
-const users = fs.readdirSync(usersDir);
 
 router.post("/generate_api_key", (req, res) => {
   const apiKey = uuid();

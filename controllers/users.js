@@ -1,39 +1,38 @@
-const path = require("path");
-const fs = require("fs");
+const { db } = require("../database/supabase");
 
-const usersDir = path.join(__dirname, "../database/users");
-
-exports.saveUser = (user) => {
-  const userPath = path.join(usersDir, `${user.id}.json`);
-  fs.existsSync(userPath) || fs.writeFileSync(userPath, JSON.stringify(user));
+exports.saveUser = async (user) => {
+  try {
+    const { data } = await db.from("users").insert([user]).select("id");
+    const { id } = data[0];
+    return id;
+  } catch (err) {
+    console.log(err);
+  }
 };
 
-exports.getUser = (userId) => {
-  const userPath = path.join(usersDir, `${userId}.json`);
-  if (!fs.existsSync(userPath)) return null;
-  return JSON.parse(fs.readFileSync(userPath, "utf-8"));
+exports.getUser = async (userId) => {
+  const { data } = await db.from("users").select("*").eq("id", userId);
+  return data[0];
 };
 
-exports.getUserByApiKey = (apiKey) => {
-  const users = fs.readdirSync(usersDir);
-  const user = users.find((user) => {
-    const userObj = JSON.parse(
-      fs.readFileSync(path.join(usersDir, user)),
-      "utf-8"
-    );
-    return userObj.apiKey === apiKey;
-  });
-  if (!user) return null;
-  return JSON.parse(fs.readFileSync(path.join(usersDir, user), "utf-8"));
+exports.getUserByApiKey = async (apiKey) => {
+  const { data } = await db
+    .from("users")
+    .select("*")
+    .eq("apiKey", apiKey)
+    .select("id");
+  return data[0];
+};
+
+exports.getUserByEmail = async (email) => {
+  const { data } = await db.from("users").select("*").eq("email", email);
+  return data[0];
 };
 
 exports.updateUser = async (userId, data) => {
-  const userPath = path.join(usersDir, `${userId}.json`);
-  const user = JSON.parse(fs.readFileSync(userPath, "utf-8"));
-  fs.writeFileSync(userPath, JSON.stringify({ ...user, ...data }));
+  await db.from("users").update(data).eq("id", userId);
 };
 
 exports.deleteUser = async (userId) => {
-  const userPath = path.join(usersDir, `${userId}.json`);
-  fs.unlinkSync(userPath);
+  await db.from("users").delete().eq("id", userId);
 };

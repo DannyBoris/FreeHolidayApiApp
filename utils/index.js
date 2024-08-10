@@ -14,7 +14,7 @@ exports.isExpired = (time) => {
 exports.setAuthCookie = (res, payload) => {
   res.cookie("authToken", payload, {
     httpOnly: true,
-    secure: false,
+    secure: process.env.NODE_ENV === "production",
     maxAge: this.expireAfter,
   });
 };

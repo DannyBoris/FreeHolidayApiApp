@@ -1,8 +1,9 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { api } from "../api";
+import { UserContext } from "../App";
 
 function Dashboard() {
-  const [user, setUser] = useState({});
+  const { user, setUser } = useContext(UserContext);
   const [holidayJson, setHolidayJson] = useState({});
 
   useEffect(() => {
@@ -23,43 +24,35 @@ function Dashboard() {
     setUser((prevUser) => ({ ...prevUser, apiKey }));
   }
 
-  return (
-    <div className="container p-10 flex flex-col gap-10">
+  return user ? (
+    <div className="container p-10 flex flex-col gap-10 h-[600px] border border-gray-100 m-auto mt-10">
+      <h1>Account</h1>
       {user.apiKey ? (
-        <div>
-          <p>
-            API Key:
-            <span className="bg-gray-200 text-gray-800 font-bold py-2 px-4 rounded ml-2">
+        <div className="flex flex-col gap-10">
+          <h2 className="text-2xl font-bold">API key</h2>
+          <div className="mt-4">
+            <span className="bg-gray-50 text-gray-800 font-bold py-2 px-4 rounded mr-2">
               {user.apiKey}
             </span>
-          </p>
+            <span
+              className=" bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded cursor-pointer
+            "
+            >
+              Copy
+            </span>
+          </div>
+          <h1 className="text-xl">
+            Requests Left:{" "}
+            <span className="bg-gray-200 text-gray-800 font-bold py-2 px-4 rounded ml-2">
+              {user.requestsLeft}
+            </span>
+          </h1>
         </div>
       ) : (
-        <button
-          onClick={generateApiKey}
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-2"
-        >
-          Generate API Key
-        </button>
+        <button onClick={generateApiKey}>Generate API key!</button>
       )}
-      <p>Requests Left: {user.requestsLeft}</p>
-      <button
-        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-2"
-        onClick={async () => {
-          console.log("Try it now");
-          const response = await api.get(
-            `/api/v1/holidays?country=US&year=2021&apiKey=${user.apiKey}`
-          );
-          setHolidayJson(response.slice(0, 5));
-        }}
-      >
-        Try it now
-      </button>
-      <pre className="text-sm w-fit overflow-auto bg-gray-200">
-        {JSON.stringify(holidayJson, null, 2)}
-      </pre>
     </div>
-  );
+  ) : null;
 }
 
 export default Dashboard;

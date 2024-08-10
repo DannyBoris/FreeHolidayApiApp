@@ -4,7 +4,14 @@ const jwt = require("jsonwebtoken");
 const path = require("path");
 const fs = require("fs");
 const { authentication } = require("../middlewares/auth");
-const { uuid, isExpired, expireAfter } = require("../utils");
+const {
+  uuid,
+  isExpired,
+  expireAfter,
+  setAuthCookie,
+  signJWTToken,
+} = require("../utils");
+const { getUser } = require("../controllers/users");
 const usersDir = "./database/users";
 const users = fs.readdirSync(usersDir);
 
@@ -15,7 +22,7 @@ router.post("/login", (req, res) => {
       const payload = jwt.decode(cookies.authToken);
       if (isExpired(payload.iat)) {
         res.clearCookie("authToken");
-        return res.status(401).send("Token expired. Unauthorized");
+        return res.status(401).send({ message: "Token expired" });
       }
       const isValid = jwt.verify(cookies.authToken, "secret");
       if (isValid) {
@@ -34,33 +41,27 @@ router.post("/login", (req, res) => {
       return true;
     }
   });
-
+  if (!currUserFile) {
+    return res.status(409).send({ message: "User not found" });
+  }
   const currUser = JSON.parse(
     fs.readFileSync(path.join(usersDir, currUserFile), "utf-8")
   );
 
-  console.log({ currUser });
   const hash = crypto.createHash("sha256").update(password).digest("hex");
-  const userPath = path.join(usersDir, `${currUser.id}.json`);
-  if (!fs.existsSync(userPath)) {
-    return res.status(404).send("User not found");
+  const user = getUser(currUser.id);
+  if (!user) {
+    return res.status(404).send({ message: "User not found" });
   }
-  const user = JSON.parse(fs.readFileSync(userPath, "utf-8"));
   if (user.hash !== hash) {
-    return res.status(401).send("Unauthorized");
+    return res.status(401).send({ message: "Unauthorized" });
   }
   if (!req.cookies.authToken) {
-    const jwtToken = jwt.sign({ id: user.id, email, hash }, "secret");
-    res.cookie("authToken", jwtToken, {
-      httpOnly: false,
-      secure: false,
-      maxAge: expireAfter,
-    });
+    setAuthCookie(res, signJWTToken({ id: user.id, email, hash }));
   }
-  res.send(currUser.id);
+  res.send({ userId: user.id });
 });
 router.post("/register", async (req, res) => {
-  console.log(req.body);
   const { email, password } = req.body;
   const hash = crypto.createHash("sha256").update(password).digest("hex");
   const userId = uuid();
@@ -87,8 +88,9 @@ router.post("/register", async (req, res) => {
   //send cookie
   res.cookie("authToken", jwtToken, {
     httpOnly: false,
-    secure: false,
+    secure: process.env.NODE_ENV === "production",
     maxAge: expireAfter,
+    expires: new Date(Date.now() + expireAfter),
   });
 
   res.send({ userId });

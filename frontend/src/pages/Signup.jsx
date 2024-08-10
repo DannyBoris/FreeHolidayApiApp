@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { api } from "../api";
 
 function Signup() {
   const [email, setEmail] = useState("");
@@ -6,7 +7,7 @@ function Signup() {
 
   const handleSignup = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/auth/register", {
+      const response = await api.post("/api/auth/register", {
         email,
         password,
       });

@@ -1,35 +1,48 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { ToastContainer } from "react-toastify";
+import Layout from "./components/Layout";
+import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
+import Landing from "./pages/Landing";
+import Login from "./pages/Login";
+import Dashboard from "./pages/Dashboard";
+import Countries from "./pages/Countries";
+import NotFound404 from "./pages/NotFound404";
+import { createContext, useEffect, useState } from "react";
+import { api } from "./api";
+
+export const UserContext = createContext();
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const user = await api.get("/api/v1/auth/me");
+        setUser(user);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchUser();
+  }, []);
 
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <Router>
+      <UserContext.Provider value={{ user, setUser }}>
+        <Layout>
+          <ToastContainer theme="colored" hideProgressBar autoClose={1500} />
+          <Routes>
+            <Route path="/" Component={Landing} />
+            <Route path="/login" Component={Login} />
+            <Route path="/dashboard" Component={Dashboard} />
+            <Route path="/countries" Component={Countries} />
+            <Route path="*" element={<NotFound404 />} />
+          </Routes>
+        </Layout>
+      </UserContext.Provider>
+    </Router>
+  );
 }
 
-export default App
+export default App;

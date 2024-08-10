@@ -3,4 +3,6 @@ module.exports = {
   apiKey: require("./apiKey"),
   countries: require("./countries"),
   holidays: require("./holidays"),
+  mailing: require("./mailing"),
+  github: require("./github"),
 };

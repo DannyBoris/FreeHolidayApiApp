@@ -1,9 +1,20 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+/* font size 14  */
+
+@layer components {
+  .btn-primary {
+    @apply bg-purple-500 text-white py-2 px-4 rounded hover:bg-purple-700 transition duration-200 ease-in-out;
+  }
+  .btn-lg {
+    @apply py-3 px-6 text-lg;
+  }
+}
+
 * > * {
   box-sizing: border-box;
-  font-family: "Roboto", sans-serif;
+  font-family: "Poppins", sans-serif;
 }
 .glightbox-container {
   width: 100%;
@@ -1161,6 +1172,7 @@ button.swiper-pagination-bullet {
   */
 
 html {
+  font-size: 14px;
   line-height: 1.5; /* 1 */
   -webkit-text-size-adjust: 100%; /* 2 */
   -moz-tab-size: 4; /* 3 */
@@ -1324,8 +1336,7 @@ select {
 
 button,
 [type="button"],
-[type="reset"],
-[type="submit"] {
+[type="reset"] {
   -webkit-appearance: button; /* 1 */
   background-color: transparent; /* 2 */
   background-image: none; /* 2 */

@@ -1,6 +1,7 @@
 const jwt = require("jsonwebtoken");
 const usersDir = "./database/users";
 const fs = require("fs");
+const { getUserByApiKey } = require("../controllers/users");
 
 exports.authentication = (req, res, next) => {
   const { authToken } = req.cookies;
@@ -26,13 +27,13 @@ exports.authorization = (req, res, next) => {
       .status(401)
       .send({ message: "Unauthorized. Please provide an API key" });
   }
-  const users = fs.readdirSync(usersDir);
-  console.log({ user: req.user });
-  const currUserFile = users.find((user) => user.includes(req.user));
-  const currUser = JSON.parse(fs.readFileSync(usersDir + "/" + currUserFile));
-  if (!currUser.apiKey || apiKey !== currUser.apiKey) {
+  const user = getUserByApiKey(apiKey);
+
+  if (!user) {
     return res.status(401).send({ message: "Unauthorized. Invalid API key" });
   }
-
+  console.log("User", user);
+  req.user = user.id;
+  console.log(req.user);
   next();
 };

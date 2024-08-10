@@ -6,6 +6,7 @@ const fs = require("fs");
 
 router.get("/", (req, res) => {
   const { country, year } = req.query;
+  console.log({ user: req.user });
   if (!country || !year) {
     return res.status(400).send("Bad request. Please provide country and year");
   }

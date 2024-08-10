@@ -1,8 +1,28 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { api } from "../api";
+import { toast } from "react-toastify";
 
 function Landing() {
+  async function handleSupportSubmit(e) {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    const data = Object.fromEntries(formData);
+    try {
+      await api.post("/api/v1/mailing/send", {
+        to: data.email,
+        subject: "Support - " + data.name,
+        text: data.message,
+      });
+      toast.success("Message sent successfully");
+      console.log(data);
+    } catch (error) {
+      toast.error("Failed to send message");
+      console.error(error);
+    }
+  }
   const [plan, setPlan] = useState("free");
+
   return (
     <main>
       <div className="absolute w-[30px] top-1/2 left-1/2">
@@ -162,8 +182,8 @@ function Landing() {
           >
             <p className="text-base text-body">
               <Link to="dashboard">
-                <button className="rounded-md bg-primary py-3 px-8 text-white font-semibold hover:bg-opacity-90">
-                  Get you free API key
+                <button className="btn-primary btn-lg">
+                  Get your free API key
                 </button>
               </Link>
             </p>
@@ -192,7 +212,7 @@ function Landing() {
                     </svg>
                   </div>
                   <h3 className="mb-4 text-xl font-semibold text-black dark:text-white sm:text-[22px] xl:text-[26px]">
-                    240+ Countries
+                    240+ Countries Supported
                   </h3>
                   <p className="text-base text-body">
                     Lorem ipsum dolor sit amet, consectetur adipiscing elit. In
@@ -272,7 +292,8 @@ function Landing() {
                     Fast and reliable
                   </h3>
                   <p className="text-base text-body">
-                    Our machines are always up! No cold starts and no delays
+                    Our machines are always up.
+                    <br /> No cold starts and no delays.
                   </p>
                 </div>
               </div>
@@ -306,11 +327,11 @@ function Landing() {
                     </svg>
                   </div>
                   <h3 className="mb-4 text-xl font-semibold text-black dark:text-white sm:text-[22px] xl:text-[26px]">
-                    Speed Optimized
+                    All holidays between 2000 and 2040
                   </h3>
                   <p className="text-base text-body">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. In
-                    convallis tortor.
+                    Our API delivers holidays spanning from the year 2000 to
+                    2040.{" "}
                   </p>
                 </div>
               </div>
@@ -847,10 +868,7 @@ function Landing() {
                     </span>
                   </p>
                 </div>
-                <a
-                  href="#"
-                  className="block w-full rounded-md bg-black py-[10px] px-8 text-center text-base font-medium text-white hover:bg-primary dark:bg-[#2A2E44] dark:hover:bg-primary"
-                >
+                <a href="dashboard" className="btn-lg btn-primary w-full">
                   Choose Plan
                 </a>
               </div>
@@ -1124,7 +1142,7 @@ function Landing() {
             className="wow fadeInUp mx-auto w-full max-w-[925px] rounded-lg bg-[#F8FAFB] px-8 py-10 shadow-card dark:bg-[#15182B] dark:shadow-card-dark sm:px-10"
             data-wow-delay=".3s"
           >
-            <form>
+            <form onSubmit={handleSupportSubmit}>
               <div className="-mx-[22px] flex flex-wrap">
                 <div className="w-full px-[22px] md:w-1/2">
                   <div className="mb-8">
@@ -1140,17 +1158,6 @@ function Landing() {
                 <div className="w-full px-[22px] md:w-1/2">
                   <div className="mb-8">
                     <input
-                      type="text"
-                      name="company"
-                      id="company"
-                      placeholder="Comapy (optioanl)"
-                      className="w-full rounded border border-stroke bg-white py-4 px-[30px] text-base text-body outline-none focus:border-primary dark:border-[#34374A] dark:bg-[#2A2E44] dark:focus:border-primary"
-                    />
-                  </div>
-                </div>
-                <div className="w-full px-[22px] md:w-1/2">
-                  <div className="mb-8">
-                    <input
                       type="email"
                       name="email"
                       id="email"
@@ -1159,17 +1166,7 @@ function Landing() {
                     />
                   </div>
                 </div>
-                <div className="w-full px-[22px] md:w-1/2">
-                  <div className="mb-8">
-                    <input
-                      type="text"
-                      name="phone"
-                      id="phone"
-                      placeholder="Enter your Phone Number"
-                      className="w-full rounded border border-stroke bg-white py-4 px-[30px] text-base text-body outline-none focus:border-primary dark:border-[#34374A] dark:bg-[#2A2E44] dark:focus:border-primary"
-                    />
-                  </div>
-                </div>
+
                 <div className="w-full px-[22px]">
                   <div className="mb-8">
                     <textarea
@@ -1188,8 +1185,9 @@ function Landing() {
                       policy,
                     </p>
                     <button
-                      type="submit"
-                      className="inline-block rounded-md bg-primary py-[14px] px-11 text-base font-medium text-white hover:bg-opacity-90"
+                      type="submitSupport center"
+                      onClick={handleSupportSubmit}
+                      className="btn-primary btn-lg"
                     >
                       Contact Us
                     </button>

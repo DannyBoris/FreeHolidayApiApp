@@ -5,4 +5,5 @@ module.exports = {
   holidays: require("./holidays"),
   mailing: require("./mailing"),
   github: require("./github"),
+  google: require("./google"),
 };

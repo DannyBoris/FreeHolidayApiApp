@@ -16,6 +16,16 @@ function App() {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
+    const iframe = document.getElementById("paymentId");
+    if (iframe) {
+      iframe.contentWindow.postMessage(
+        { total: "100", pricePerUnit: "20" },
+        "*"
+      );
+    }
+  }, [window.location.href]);
+
+  useEffect(() => {
     const fetchUser = async () => {
       try {
         const user = await api.get("/api/v1/auth/me");
@@ -39,7 +49,7 @@ function App() {
             <Route path="/dashboard" Component={Dashboard} />
             <Route path="/countries" Component={Countries} />
             <Route path="/docs" Component={ApiDocs} />
-            <Route path="*" element={<NotFound404 />} />
+            <Route path="*" element={NotFound404} />
           </Routes>
         </Layout>
       </UserContext.Provider>

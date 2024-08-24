@@ -10,6 +10,20 @@ exports.saveUser = async (user) => {
   }
 };
 
+exports.upsertUser = async (user) => {
+  console.log("upserting user", user);
+  try {
+    const { data } = await db
+      .from("users")
+      .upsert([user])
+      .select("id")
+      .eq("id", user.id);
+    return data?.[0];
+  } catch (err) {
+    console.log(err);
+  }
+};
+
 exports.getUser = async (userId) => {
   const { data } = await db.from("users").select("*").eq("id", userId);
   return data[0];

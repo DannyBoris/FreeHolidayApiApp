@@ -4,6 +4,7 @@ import { api } from "../api";
 import { toast } from "react-toastify";
 
 function Landing() {
+  const [isLoading, setLoading] = useState(false);
   useEffect(() => {
     const faq = document.querySelectorAll(".faq");
     Array.from(faq).forEach((item) => {
@@ -14,8 +15,11 @@ function Landing() {
     });
   }, []);
 
+
+
   async function handleSupportSubmit(e) {
     e.preventDefault();
+    setLoading(true);
     const formData = new FormData(e.target);
     const data = Object.fromEntries(formData);
     try {
@@ -29,6 +33,8 @@ function Landing() {
     } catch (error) {
       toast.error("Failed to send message");
       console.error(error);
+    } finally {
+      setLoading(false);
     }
   }
   const [plan, setPlan] = useState("monthly");
@@ -145,8 +151,7 @@ function Landing() {
                     240+ Countries Supported
                   </h3>
                   <p className="text-base text-body">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. In
-                    convallis tortor.
+                    From Afghanistan to Zimbabwe, our API supports over 240 countries.
                   </p>
                 </div>
               </div>
@@ -300,8 +305,7 @@ function Landing() {
                     Regular Updates
                   </h3>
                   <p className="text-base text-body">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. In
-                    convallis tortor.
+                    Alway up-to-date with the latest holidays.
                   </p>
                 </div>
               </div>
@@ -659,6 +663,7 @@ function Landing() {
             className="wow fadeInUp mb-[60px] flex items-center justify-center"
             data-wow-delay=".25s"
           >
+
             <label htmlFor="togglePlan" className="inline-flex items-center">
               <input
                 onChange={(e) => {
@@ -681,7 +686,7 @@ function Landing() {
             </label>
           </div>
           <div className="-mx-6 flex flex-wrap justify-center">
-            <div className="w-full px-6 md:w-1/2 lg:w-1/3">
+            <div className="w-full px-6 md:w-1/2 lg:w-1/4">
               <div
                 className="wow fadeInUp mb-10 rounded-xl bg-white py-10 px-9 shadow-card dark:bg-dark dark:shadow-card-dark lg:mb-4 lg:px-7 xl:px-9"
                 data-wow-delay=".2s"
@@ -803,7 +808,7 @@ function Landing() {
                 </div>
               </div>
             </div>
-            <div className="w-full px-6 md:w-1/2 lg:w-1/3">
+            <div className="w-full px-6 md:w-1/2 lg:w-1/4">
               <div
                 className="wow fadeInUp relative mb-10 rounded-xl bg-white py-10 px-9 shadow-card dark:bg-dark dark:shadow-card-dark lg:mb-4 lg:px-7 xl:px-9"
                 data-wow-delay=".3s"
@@ -849,7 +854,7 @@ function Landing() {
                         </defs>
                       </svg>
                     </span>
-                    60-day chat history
+                    Unlimited requests
                   </p>
                   <p className="flex text-base text-black dark:text-body">
                     <span className="mr-[10px] mt-1">
@@ -937,9 +942,12 @@ function Landing() {
                 </div>
               </div>
             </div>
+            <Link to="checkout">To checkout</Link>
           </div>
         </div>
       </section>
+
+
 
       <section
         id="faq"
@@ -1121,11 +1129,11 @@ function Landing() {
                       policy,
                     </p>
                     <button
-                      type="submitSupport center"
-                      onClick={handleSupportSubmit}
+                      disabled={isLoading}
+                      type="submit"
                       className="btn-primary btn-lg"
                     >
-                      Contact Us
+                      {isLoading ? "Sending..." : "Contact Us"}
                     </button>
                   </div>
                 </div>

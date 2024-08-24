@@ -2,14 +2,21 @@ import { useContext, useEffect, useState } from "react";
 import { api } from "../api";
 import { UserContext } from "../App";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 function Dashboard() {
   const { user, setUser } = useContext(UserContext);
   const [holidayJson, setHolidayJson] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    api.get("/api/v1/auth/me").then(setUser).catch(console.error);
-  }, [setUser]);
+    api
+      .get("/api/v1/auth/me")
+      .then(setUser)
+      .catch(() => {
+        navigate("/login");
+      });
+  }, [setUser, navigate]);
 
   async function generateApiKey() {
     const { apiKey } = await api.post("/api/v1/api_key/generate_api_key");
@@ -71,7 +78,7 @@ function Dashboard() {
         </div>
       ) : (
         <button className="btn-primary btn-lg" onClick={generateApiKey}>
-          Generate API key!
+          Generate API key
         </button>
       )}
     </div>

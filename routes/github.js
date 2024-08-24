@@ -1,6 +1,7 @@
 const path = require("path");
 const fs = require("fs");
 const { uuid, setAuthCookie, signJWTToken } = require("../utils");
+const { upsertUser } = require("../controllers/users");
 const router = require("express").Router();
 
 router.get("/callback", async (req, res) => {
@@ -9,7 +10,7 @@ router.get("/callback", async (req, res) => {
     const params = {
       client_id: process.env.GITHUB_CLIENT_ID,
       client_secret: process.env.GITHUB_CLIENT_SECRET,
-      code: code,
+      code,
     };
 
     const searchParams = new URLSearchParams(params).toString();
@@ -27,17 +28,13 @@ router.get("/callback", async (req, res) => {
 
     const { name, id } = await userResponse.json();
     const user = { id: uuid(), name, github_id: id, provider: "github" };
-    const userPath = path.join(
-      __dirname,
-      `../database/users/${user.userId}.json`
-    );
+    await upsertUser(user);
 
-    fs.existsSync(userPath) || fs.writeFileSync(userPath, JSON.stringify(user));
-    setAuthCookie(res, signJWTToken({ id: user.userId }));
+    setAuthCookie(res, signJWTToken({ id: user.id }));
     const redirectUrl =
       process.env.NODE_ENV === "production"
         ? `/dashboard`
-        : `http://localhost:8081/dashboard`;
+        : `http://localhost:8080/dashboard`;
     res.redirect(redirectUrl);
   } catch (err) {
     console.log("GITHUB: ", err);

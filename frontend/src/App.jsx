@@ -25,6 +25,7 @@ function App() {
     }
   }, [window.location.href]);
 
+
   useEffect(() => {
     const fetchUser = async () => {
       try {

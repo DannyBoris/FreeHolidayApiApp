@@ -50,9 +50,22 @@ function Header() {
             </ul>
           </nav>
           {user ? (
-            <Link to="/dashboard" className="btn-primary btn-lg">
-              Dashboard
-            </Link>
+            <div className="flex items-center gap-1">
+              <button
+                onClick={() => {
+                  // delete cookie
+                  document.cookie = "";
+                  fetch(`/api/v1/user/${user.id}`, { method: "DELETE" });
+                  setUser(null);
+                }}
+                className="bg-red-500 text-white p-2.5"
+              >
+                Delete account
+              </button>
+              <Link to="/dashboard" className="btn-primary btn-lg">
+                Dashboard
+              </Link>
+            </div>
           ) : (
             <div className="flex items-center gap-6">
               <a href="/login">Login</a>

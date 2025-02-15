@@ -4,7 +4,12 @@ const jwt = require("jsonwebtoken");
 
 const { authentication } = require("../middlewares/auth");
 const { isExpired, setAuthCookie, signJWTToken } = require("../utils");
-const { getUser, saveUser, getUserByEmail } = require("../controllers/users");
+const {
+  getUser,
+  saveUser,
+  getUserByEmail,
+  deleteUser,
+} = require("../controllers/users");
 
 router.post("/login", async (req, res) => {
   if (!req.body.email || !req.body.password) {
@@ -23,6 +28,7 @@ router.post("/login", async (req, res) => {
       }
     }
   }
+
   const { email, password } = req.body;
   const user = await getUserByEmail(email);
   const hash = crypto.createHash("sha256").update(password).digest("hex");
@@ -39,6 +45,12 @@ router.post("/login", async (req, res) => {
     setAuthCookie(res, signJWTToken({ id: user.id, email, hash }));
   }
   res.send({ userId: user.id });
+});
+
+router.delete("/user/:id", async (req, res) => {
+  const { id } = req.params;
+  await deleteUser(id);
+  res.send({ message: "User deleted" });
 });
 
 router.post("/register", async (req, res) => {

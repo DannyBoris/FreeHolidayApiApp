@@ -9,7 +9,6 @@ const routes = require("./routes");
 const morgan = require("morgan");
 const { authentication, authorization } = require("./middlewares/auth");
 const { saveApiRequest } = require("./controllers/apiRequests");
-const { log } = require("console");
 const PORT = process.env.PORT || 3000;
 const v1 = "/api/v1";
 
